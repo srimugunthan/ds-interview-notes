@@ -129,3 +129,60 @@ Here is the point-by-point transcript breakdown of the third video in the playli
   `param.requires_grad = False`
   This action drops frozen tensors from the autograd graph entirely, protecting those weights from optimization adjustments.
 - **[[01:06:58]](https://www.youtube.com/watch?v=c6VTUx0EdqM&t=4018s) - Verification and Benefits:** Running training with a frozen feature extraction backend. It yields a strong **96.6% accuracy** while using significantly less VRAM and compute time, since backpropagation gradients are only calculated for the single final layer.
+
+---
+Here is the markdown rendered cleanly:
+
+---
+
+Here is the point-by-point transcript breakdown of the fourth video in the series, covering the mathematical history of Convolutions, Signal Processing fundamentals, and the scratch implementation of an AlexNet Convolutional Neural Network (CNN) in PyTorch:
+
+### 1. The Mathematical Foundation of Convolutions (1D Signals)
+
+- **[[00:00]](https://www.youtube.com/watch?v=WoIxtSBYyYA&t=0s) - Introduction:** Convolutions existed long before deep learning. They are fundamentally a spatial or temporal moving weighted average used extensively across signal processing.
+- **[[02:01]](https://www.youtube.com/watch?v=WoIxtSBYyYA&t=121s) - The Discrete Convolution Formula:** Writing out the formal 1D discrete time equation:
+
+  `y[n] = x[n] * h[n] = Σ(k=-∞ to ∞) x[k] h[n - k]`
+
+  Where `x[n]` is the raw signal and `h[n]` is the analysis filter.
+- **[[03:29]](https://www.youtube.com/watch?v=WoIxtSBYyYA&t=209s) - Noise Removal Motivating Example:** An intuitive example modeling a violinist playing a clean sinusoidal tone with background fan noise. The recorded result is a noisy composite signal.
+- **[[05:51]](https://www.youtube.com/watch?v=WoIxtSBYyYA&t=351s) - Moving Average/Smoothing Filters:** Designing an analysis filter `h[n]` as a 5-pulse rectangle window where each step carries a weight coefficient of `1/5`. Sliding this across the discrete steps of `x[n]` performs a multiply-and-accumulate operation that filters out jagged variation to uncover the underlying clean sinusoid.
+
+### 2. Time-Domain vs. Frequency-Domain Mechanics
+
+- **[[11:44]](https://www.youtube.com/watch?v=WoIxtSBYyYA&t=704s) - The Convolution Theorem:** Explaining the cornerstone concept of Signal Processing: *Convolution in the time/space domain is equivalent to scalar multiplication in the frequency domain:*
+
+  `x[n] * h[n] ⟺ X(ω) · H(ω)`
+- **[[14:09]](https://www.youtube.com/watch?v=WoIxtSBYyYA&t=849s) - The Computational Efficiency Paradox:** To eliminate noise, you can map a signal via Fast Fourier Transform (FFT), apply an ideal low-pass filter, and convert back using Inverse FFT (IFFT). However, both operations are structurally expensive (`O(N log N)`) for large signal sizes.
+- **[[19:20]](https://www.youtube.com/watch?v=WoIxtSBYyYA&t=1160s) - Time-Domain Optimization:** By doing a time-domain spatial convolution directly, it runs at an operational cost of `O(N · M)`. Since the analysis filter size (`M`) is typically tiny (e.g., `3` or `5` elements), direct convolution bypasses frequency conversion overhead entirely.
+- **[[20:22]](https://www.youtube.com/watch?v=WoIxtSBYyYA&t=1222s) - High-Pass/Difference Filters:** Introducing an alternating 2-element filter with coordinates `[1, -1]`. When passed through a signal, it acts as a discrete high-pass differentiation step, canceling static zones entirely while outputting a non-zero peak exclusively at structural boundaries.
+- **[[25:57]](https://www.youtube.com/watch?v=WoIxtSBYyYA&t=1557s) - The Paradigm Shift to Deep Learning:** Traditionally, humans manually combined various static filters (smoothing, bandpass, difference) to extract features. Convolutional Neural Networks alter this by initializing the filter arrays with unassigned learnable weights (`W₁, W₂, W₃...`), allowing backpropagation to figure out the ideal filter banks.
+
+### 3. Transitioning to 2D Convolutions in PyTorch
+
+- **[[34:36]](https://www.youtube.com/watch?v=WoIxtSBYyYA&t=2076s) - Spatial Limitations of Dense/Linear Layers:** Processing images through dense, flattened layers poses massive challenges:
+  1. A modest `1000 × 1000` resolution image creates `1,000,000` input nodes to a single layer, making it completely unscalable.
+  2. Flattening a 2D matrix destroys adjacent spatial correlation.
+- **[[36:12]](https://www.youtube.com/watch?v=WoIxtSBYyYA&t=2172s) - 2D Matrix Filtering:** Demonstrating 2D convolutions using a sliding structural kernel grid that outputs a collapsed matrix map.
+- **[[41:59]](https://www.youtube.com/watch?v=WoIxtSBYyYA&t=2519s) - Core Convolution Hyperparameters:** Breaking down `nn.Conv2d`:
+  - **Input Channels:** Raw array depths (e.g., 3 for RGB, 1 for grayscale).
+  - **Output Channels:** The number of independent filters tracking traits inside your filter bank.
+  - **Kernel Size:** Dimensional scale of the sliding filter (usually odd numbers like `3 × 3` or `5 × 5` to ensure a clear balance center).
+  - **Stride:** Discrete spatial jumps your filter takes per step.
+  - **Padding:** Perimeter boundary extensions (e.g., zero padding) that allow filters to spill over corners, preserving structural image resolutions.
+- **[[46:41]](https://www.youtube.com/watch?v=WoIxtSBYyYA&t=2801s) - Multi-Channel Math:** Stepping through the exact multi-channel dot product calculation. An RGB sliding window multiplies values simultaneously across all 3 channels to compress spatial inputs into a single output cell.
+
+### 4. Advanced Operations: im2col, Pooling, and Batch Normalization
+
+- **[[59:05]](https://www.youtube.com/watch?v=WoIxtSBYyYA&t=3545s) - The im2col (Image-to-Column) Algorithm:** In structural frameworks, writing loops to slide a kernel over a matrix is computationally inefficient. PyTorch implements the `im2col` mechanism (`nn.unfold`), which duplicates overlapping sliding windows into continuous linear matrix rows. This converts spatial convolutions into highly optimized, hardware-accelerated General Matrix Multiplication (GEMM) tasks.
+- **[[01:18:24]](https://www.youtube.com/watch?v=WoIxtSBYyYA&t=4704s) - Subsampling and Adaptive Pooling:** Comparing Max/Average pooling configurations to compress dimensions without learnable variables. Highlights `nn.AdaptiveAvgPool2d`, which computes its own stride and padding to enforce a static user-defined output scale (e.g., `2 × 2`), regardless of the incoming spatial dimensions.
+- **[[01:23:56]](https://www.youtube.com/watch?v=WoIxtSBYyYA&t=5036s) - Batch Normalization Theory:** Passing normalized variables through non-linear activation functions (like ReLU) skews their standard distribution. This breaks downstream convergence over deep architectures (internal covariate shift). `nn.BatchNorm2d` solves this by calculating batch-level channel deviations dynamically to re-scale training layers.
+
+### 5. Writing the Entire AlexNet Architecture From Scratch
+
+- **[[01:34:31]](https://www.youtube.com/watch?v=WoIxtSBYyYA&t=5671s) - Classic CNN Scaling Principles:** As visual inputs advance deeper through a CNN pipeline, the *spatial resolution diminishes* via downsampling strides, while the *channel depth expands* to catalog complex semantic features.
+- **[[01:37:03]](https://www.youtube.com/watch?v=WoIxtSBYyYA&t=5823s) - Code Implementation:** Writing a clean `nn.Module` for AlexNet using `nn.Sequential` block structures:
+  - Stacks 5 layers of multi-channel `nn.Conv2d` blocks interleaved with `nn.ReLU`, `nn.MaxPool2d`, and `nn.BatchNorm2d`.
+  - Integrates `nn.Dropout(p=0.5)` blocks into a deep classification head to mitigate over-parameterized memorization.
+- **[[01:47:53]](https://www.youtube.com/watch?v=WoIxtSBYyYA&t=6473s) - The Forward Pass Flatten Step:** Intercepting feature extractions at their final layer (`[Batch, 256, 2, 2]`), computing a flattening transformation down to a linear vector (`1024` elements), and funneling it into dense classification heads.
+- **[[01:54:40]](https://www.youtube.com/watch?v=WoIxtSBYyYA&t=6880s) - GPU Training Execution:** Running the custom network on a dogs vs. cats dataset. This demonstrates the performance gap between hardware options, showing how highly parallelized spatial filters run exponentially faster on dedicated GPU frameworks than on standard CPUs.
