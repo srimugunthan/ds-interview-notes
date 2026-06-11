@@ -1,4 +1,3 @@
-Here is the markdown rendered cleanly:
 
 ---
 
@@ -43,11 +42,7 @@ Here is the comprehensive breakdown of the PyTorch foundations video, organized 
 - **[02:48:09](https://www.google.com/search?q=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3Dd86lJxKInYg%26t%3D10089s) - Validation Loops & Tracking Overfitting:** Implementing side-by-side epoch loops plotting training loss against unseen verification pools to catch divergence and overfitting trends early.
 
 
---
 
-Here is the markdown rendered cleanly with the duplicated longer hyperlinks removed (keeping only the `[]` text and removing the redundant `()` URL):
-
----
 --
 ---
 
