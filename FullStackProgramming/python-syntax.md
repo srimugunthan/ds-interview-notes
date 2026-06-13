@@ -1,3 +1,7 @@
+# Python syntax
+
+https://www.youtube.com/watch?v=PNSIWjWAA7o 
+
 Here is the structured breakdown of the Python syntax covered in the tutorial, organized by topic with relevant video timestamps:
 
 ### 1. Basics, Math, & Strings
@@ -81,3 +85,153 @@ Here is the structured breakdown of the Python syntax covered in the tutorial, o
 
 
 * **Main Module Guard:** The boilerplate wrapper `if __name__ == "__main__":` ensures specific logic execution only when a script file is launched directly, preventing that code from running if it is imported into another file `[00:23:49]`.
+
+---
+# Python OOP
+https://www.youtube.com/watch?v=OemVdsibSFQ 
+
+Here is a comprehensive breakdown of the core Object-Oriented Programming (OOP) concepts in Python covered in the tutorial, structured as an intuitive reference guide with accompanying timestamps:
+
+---
+
+### 1. The Core Entities: Classes vs. Objects
+
+Using the real-world analogy of a restaurant setup, OOP maps code blocks directly to distinct roles `[00:01:47]`.
+
+* **Class (The Blueprint):** A class serves as a structural template or a role description (e.g., the concept of a `Waiter`) `[00:03:23]`.
+* **Object (The Instance):** An individual item created out of that parent blueprint template (e.g., `Raj` or `Simran` who are specific waiters) `[00:03:23]`.
+
+```python
+# Defining the Blueprint
+class Waiter:
+    pass
+
+# Building specific staff members (Objects)
+raj = Waiter()
+simran = Waiter()
+
+```
+
+---
+
+### 2. Properties & Behaviors: Attributes vs. Methods
+
+* **Attributes (What an object *has*):** Variables tied strictly to an object or a class scope (e.g., a waiter's list of assigned tables) `[00:02:36]`.
+* **Methods (What an object *does*):** Functions nested directly inside a class blueprint to coordinate behaviors `[00:02:36]`.
+* **Encapsulation:** Bundling related data (attributes) and behavior (methods) inside an object container, allowing it to modify its own internal "state" without external interference `[00:03:04]`, `[00:10:18]`.
+
+---
+
+### 3. Dynamic Controls: `__init__` and `self`
+
+* **Class Variables vs. Instance Variables:** Defining an attribute directly underneath a class creates a variable shared globally by default among all instances `[00:04:25]`. To ensure each object gets isolated, private tracking data, you use Python's automatic constructor `[00:06:32]`.
+* **The `__init__` Constructor Method:** A special magic initialization method that executes automatically the moment a brand-new object instance is spun up into existence `[00:06:45]`.
+* **The `self` Keyword:** Refers explicitly to *this particular object* currently handling the operation. It acts as an identifier keeping each instance's data partition isolated from the others `[00:07:34]`.
+
+```python
+class Waiter:
+    def __init__(self):
+        # Every waiter object starts with its own distinct tables list
+        self.tables = []
+        
+    def take_order(self, table_number):
+        # Accessing instance data securely through self
+        self.tables.append(table_number)
+
+raj = Waiter()
+raj.take_order(5)  # Raj modifies his own isolated data state
+
+```
+
+---
+
+### 4. Code Sharing: Inheritance
+
+* **Definition:** Allows a specialized child class to automatically adopt attributes and methods defined inside a generic parent class `[00:15:05]`.
+* **Relationship:** It maps an **"is-a"** relationship (e.g., a `Waiter` *is a* `Staff` member) `[00:15:36]`.
+
+```python
+class Staff:
+    def __init__(self, name, shift):
+        self.name = name
+        self.shift = shift
+        
+    def start_work(self):
+        print(f"{self.name} started the shift.")
+
+# Waiter inherits everything from Staff automatically
+class Waiter(Staff):
+    def take_order(self):
+        print("Taking order...")
+
+```
+
+---
+
+### 5. Adaptive Context: Polymorphism
+
+* **Definition:** Derived from "many forms"—it allows different object types to respond uniquely to the exact same method signature or command line call `[00:17:30]`.
+* **Method Overriding:** A child class can declare its own customized version of a parent method. When executed, Python prefers the child version over the fallback parent contract `[00:16:43]`.
+
+```python
+class Staff:
+    def work(self):
+        pass
+
+class Waiter(Staff):
+    def work(self):
+        print("Serving tables...")
+
+class Chef(Staff):
+    def work(self):
+        print("Cooking gourmet food...")
+
+# The same loop execution yields entirely distinct behaviors
+for employee in [Waiter(), Chef()]:
+    employee.work()
+
+```
+
+---
+
+### 6. Contract Enforcement: Abstraction
+
+* **Definition:** Setting up strict operational blueprints and governance rules rather than just hiding code blocks. It relies on Python's built-in `abc` (Abstract Base Classes) framework `[00:19:13]`, `[00:21:46]`.
+* **Abstract Class / Method:** An abstract class is an enforcement template that cannot be directly instantiated. If it declares an `@abstractmethod`, any child class *must* write an explicit implementation of that method before Python allows the object to exist `[00:19:26]`.
+
+```python
+from abc import ABC, abstractmethod
+
+class Staff(ABC):
+    @abstractmethod
+    def experience(self):
+        """Must be implemented by child classes, or Python blocks instantiation."""
+        pass
+
+class Waiter(Staff):
+    def experience(self):
+        return "2 years of service"
+
+```
+
+---
+
+### 7. Structural Assembly: Composition
+
+* **Definition:** Building highly scalable architectural logic by coordinating smaller, completely independent entities instead of relying exclusively on wide inheritance deep-chains `[00:25:16]`.
+* **Relationship:** It maps a **"has-a"** relationship (e.g., a `Waiter` *has a* `Chef` reference to handle food logistics, but a waiter is *not* a chef) `[00:25:29]`.
+
+```python
+class Chef:
+    def cook(self):
+        print("Chef is cooking the meal.")
+
+class Waiter:
+    def __init__(self, assigned_chef):
+        # Cooperating via injection rather than subclass matching
+        self.chef = assigned_chef 
+
+    def complete_service(self):
+        self.chef.cook()
+
+```
